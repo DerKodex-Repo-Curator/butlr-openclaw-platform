@@ -6,7 +6,7 @@
 
 <p align="center">
   <strong>Your AI. Its own computer.</strong><br/>
-  A personal AI butler with its own VM, browser, and terminal — accessible via Telegram.
+  A complete managed wrapper around <a href="https://github.com/openclaw-ai/openclaw">OpenClaw</a> — turning the open-source AI agent into a full SaaS platform with dedicated VMs, Telegram bots, billing, and a customer portal.
 </p>
 
 <p align="center">
@@ -31,21 +31,35 @@
 
 ## What is Butlr?
 
-Butlr is a **managed AI assistant platform** that gives every user a personal AI butler running on its own dedicated virtual machine. Unlike traditional chatbot services, each butler has:
+Butlr is a **complete managed wrapper around [OpenClaw](https://github.com/openclaw-ai/openclaw)** — the open-source AI agent framework. It turns OpenClaw into a production SaaS platform where every customer gets their own AI butler running on a dedicated virtual machine.
 
-- A **dedicated VM** (2 vCPU, 4GB RAM, 80GB SSD) with full terminal & browser access
-- **Telegram-native** interaction — chat with your butler like texting a friend
-- **Real web browsing** — your butler can research, book, and interact with real websites
+**OpenClaw provides the brain. Butlr provides everything else:**
+
+| OpenClaw (AI Engine) | Butlr (Management Platform) |
+|---|---|
+| Agent runtime & tool execution | Automated VM provisioning (Hetzner Cloud) |
+| Session management & JSONL logs | Stripe billing & subscription management |
+| Browser, terminal, file system tools | Customer onboarding wizard |
+| Skill system & extensions | Skills marketplace with one-click install |
+| SOUL.md personality config | 978 personalities via [SoulVault](https://github.com/lennystepn-hue/soulvault) |
+| | Telegram bot assignment & management |
+| | Usage tracking & analytics dashboard |
+| | LLM proxy (server-side API key management) |
+| | ClawShield VM security hardening |
+| | Customer portal with billing, settings, support |
+| | OAuth Connect (link ChatGPT Plus / Claude Pro) |
+| | Email system (verification, welcome, alerts) |
+| | Health monitoring & auto-recovery |
+
+Each butler has:
+- A **dedicated VM** (2 vCPU, 4GB RAM, 80GB SSD) running OpenClaw
+- A **Telegram bot** — chat with your butler like texting a friend
+- **Real web browsing** — research, book, and interact with real websites
 - **Long-term memory** — vector-based memory that persists across conversations
 - **File system access** — create documents, spreadsheets, scripts, and more
-- **978 customizable personalities** via [SoulVault](https://github.com/lennystepn-hue/soulvault)
-- **Bring Your Own Key** support — connect ChatGPT Plus, Claude Pro, or personal API keys
+- **BYOK support** — connect ChatGPT Plus, Claude Pro, or personal API keys
 
 The platform is **production-ready** and powers [butlr.cloud](https://butlr.cloud) with paying customers.
-
-### Built on OpenClaw
-
-Butlr runs on **[OpenClaw](https://github.com/openclaw-ai/openclaw)**, an open-source AI agent framework. OpenClaw provides the core agent runtime, tool execution, and session management that powers each butler instance. Butlr adds the managed infrastructure layer: automated VM provisioning, billing, onboarding, monitoring, and the customer portal.
 
 ---
 
@@ -520,18 +534,62 @@ Full interactive API docs are available at `/docs` when running the backend.
 
 ## OpenClaw Integration
 
-Butlr uses [OpenClaw](https://github.com/openclaw-ai/openclaw) as its AI agent engine. Each customer VM runs an OpenClaw instance with:
+Butlr is a **complete managed wrapper around [OpenClaw](https://github.com/openclaw-ai/openclaw)**. OpenClaw is the open-source AI agent framework that provides the core intelligence — Butlr wraps it with everything needed to run it as a commercial SaaS product.
 
-- **Session management** — persistent JSONL session logs
-- **Tool execution** — browser, terminal, file system access
-- **Skill system** — modular capability extensions
-- **SOUL.md** — personality configuration via SoulVault templates
+### What OpenClaw Does (on each customer VM)
 
-The Butlr platform manages the OpenClaw lifecycle:
-1. **Provisioning** — installs OpenClaw on new customer VMs via Ansible
-2. **Configuration** — deploys SOUL.md and skill configurations
-3. **Monitoring** — parses OpenClaw session logs for usage tracking
-4. **Updates** — manages OpenClaw version upgrades across the fleet
+```
+┌─────────────────────────────────────────┐
+│              OpenClaw Agent              │
+│                                         │
+│  ┌───────────┐  ┌──────────┐  ┌──────┐ │
+│  │  Browser   │  │ Terminal │  │ Files│ │
+│  │  (real web │  │ (bash,   │  │ (r/w │ │
+│  │  browsing) │  │  python) │  │ docs)│ │
+│  └───────────┘  └──────────┘  └──────┘ │
+│                                         │
+│  ┌───────────┐  ┌──────────┐  ┌──────┐ │
+│  │  Session   │  │  Skills  │  │SOUL  │ │
+│  │  Logs      │  │  System  │  │.md   │ │
+│  │  (JSONL)   │  │          │  │      │ │
+│  └───────────┘  └──────────┘  └──────┘ │
+│                                         │
+│  Telegram Bot ◄──► LLM (Claude/GPT)    │
+└─────────────────────────────────────────┘
+```
+
+### What Butlr Adds (management layer)
+
+```
+┌─────────────────────────────────────────┐
+│           Butlr Management API          │
+│                                         │
+│  1. PROVISION  — Spin up Hetzner VM     │
+│                  Install OpenClaw       │
+│                  Assign Telegram bot    │
+│                  Deploy SOUL.md         │
+│                                         │
+│  2. CONFIGURE  — Skills marketplace     │
+│                  SoulVault personalities │
+│                  API key management     │
+│                  BYOK / OAuth Connect   │
+│                                         │
+│  3. MONITOR    — Parse session logs     │
+│                  Track usage & tokens   │
+│                  Health checks          │
+│                  ClawShield security    │
+│                                         │
+│  4. BILL       — Stripe subscriptions   │
+│                  Add-on upsells         │
+│                  Usage-based limits     │
+│                                         │
+│  5. SUPPORT    — Telegram relay         │
+│                  Email notifications    │
+│                  Customer portal        │
+└─────────────────────────────────────────┘
+```
+
+The platform manages the full OpenClaw lifecycle: from provisioning a fresh VM with OpenClaw installed, through daily usage collection by SSH-parsing OpenClaw session logs, to managing version upgrades across the entire fleet. If you want to offer OpenClaw as a service to customers, Butlr is the complete solution.
 
 ---
 
@@ -539,8 +597,10 @@ The Butlr platform manages the OpenClaw lifecycle:
 
 | Project | Description |
 |---------|-------------|
-| [OpenClaw](https://github.com/openclaw-ai/openclaw) | AI agent framework powering each butler |
+| [OpenClaw](https://github.com/openclaw-ai/openclaw) | The AI agent framework — Butlr's core engine |
 | [SoulVault](https://github.com/lennystepn-hue/soulvault) | Personality marketplace (978 AI personalities) |
+| [Schichtplaner](https://github.com/lennystepn-hue/schichtplaner) | Shift planning app (Next.js + Prisma) |
+| [The Company](https://github.com/lennystepn-hue/the-company) | AI agent simulation game |
 
 ---
 

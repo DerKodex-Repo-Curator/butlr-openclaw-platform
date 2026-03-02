@@ -11,7 +11,7 @@
 
 <p align="center">
   <a href="https://butlr.cloud">Live Demo</a> &bull;
-  <a href="#features">Features</a> &bull;
+  <a href="#-feature-showcase">Features</a> &bull;
   <a href="#architecture">Architecture</a> &bull;
   <a href="#getting-started">Getting Started</a> &bull;
   <a href="#deployment">Deployment</a> &bull;
@@ -29,7 +29,7 @@
 
 <p align="center">
   <a href="https://butlr.cloud">
-    <img src="docs/screenshot-hero.png" width="700" alt="Butlr Landing Page" />
+    <img src="docs/screenshots/hero.png" width="700" alt="Butlr — Your AI. Its own computer." />
   </a>
 </p>
 
@@ -69,34 +69,134 @@ The platform is **production-ready** and powers [butlr.cloud](https://butlr.clou
 
 ---
 
-## Features
+## Feature Showcase
 
-### Customer-Facing
+### Command Center — Real-Time Dashboard
 
-| Feature | Description |
-|---------|-------------|
-| **Telegram Bot** | Each customer gets a dedicated Telegram bot — no app downloads needed |
-| **AI Personalities** | 978 pre-built personalities from SoulVault, or create your own |
-| **Skills Marketplace** | Install verified OpenClaw skills to extend your butler's capabilities |
-| **BYOK Support** | Bring your own OpenAI/Anthropic/Google API keys — zero AI markup |
-| **Memory Add-on** | Persistent vector memory (mem0 + OpenAI embeddings) across sessions |
-| **Usage Dashboard** | Real-time analytics: messages, tokens, sessions, API calls |
-| **ClawShield** | VM security hardening with automated scanning and scoring |
-| **OAuth Connect** | Link ChatGPT Plus or Claude Pro subscriptions directly |
+<p align="center">
+  <img src="docs/screenshots/dashboard.png" width="800" alt="Butlr Dashboard" />
+</p>
 
-### Platform / Operator
+The dashboard is the nerve center of every butler. At a glance, customers see everything that matters:
 
-| Feature | Description |
-|---------|-------------|
-| **Automated Provisioning** | One-click VM creation on Hetzner Cloud with Ansible playbooks |
-| **Stripe Billing** | Subscription management, checkout, webhooks, add-on upsells |
-| **Bot Pool** | Pre-created Telegram bot inventory for instant assignment |
-| **Health Monitoring** | Automated VM health checks (CPU, memory, disk, bot status) |
-| **Usage Collection** | SSH-based session log parsing with daily aggregation |
-| **LLM Proxy** | Server-side API key management — keys never reach the client |
-| **Email System** | Transactional emails via Resend (verification, welcome, alerts) |
-| **Support Relay** | Customer support via Telegram bot → admin forwarding |
-| **Google OAuth** | Social login for the customer portal |
+- **Bot Status** — real-time online/offline indicator with one-click restart and direct "Open Telegram" button to jump straight into a conversation
+- **Virtual Machine** — dedicated Hetzner Cloud instance with live IP address, uptime counter, and health status badge. CPU and memory bars update in real-time via SSH polling
+- **System Metrics (24h)** — interactive Recharts graph showing CPU (red) and memory (blue) usage over the past 24 hours, with hover tooltips for exact timestamps
+- **Quick Stats** — four cards at the top: Bot status, VM status, overall uptime percentage, and VM uptime duration
+- **One-Click Controls** — restart the bot, restart the VM, or open Telegram directly from the dashboard without touching a terminal
+
+The backend fetches all metrics by SSH-ing into the customer's VM in real-time, parsing `/proc/stat` for CPU and `/proc/meminfo` for memory. Health checks run automatically every 5 minutes via the `health.py` API module.
+
+---
+
+### Usage Statistics — Full Transparency
+
+<p align="center">
+  <img src="docs/screenshots/usage-stats.png" width="800" alt="Usage Statistics" />
+</p>
+
+Complete visibility into how the butler is being used — no surprises on the bill:
+
+- **Daily Counters** — messages sent today, API calls made, tokens consumed (input + output + total), all with month-over-month comparisons
+- **Uptime Badge** — prominent 99.9% uptime indicator with exact VM uptime duration, so customers always know their butler is running
+- **Activity Heatmap** — GitHub-style contribution grid showing daily usage intensity across the entire year. Darker squares = more activity. Hover to see exact date and message count
+- **System Resources** — live CPU and memory usage bars with percentage labels, pulled directly from the VM
+- **Monthly Summary** — sidebar with aggregated stats: messages this month, tokens this month, API calls this month
+
+Usage data is collected by the `scripts/collect-usage.py` cron job that SSH-es into every customer VM hourly, parses OpenClaw's JSONL session logs, and writes aggregated metrics to the `usage_tracking` table. The frontend fetches via `/api/usage/stats` with date range filters.
+
+---
+
+### Skills Marketplace — Extend Your Butler
+
+<p align="center">
+  <img src="docs/screenshots/skills.png" width="800" alt="Skills Marketplace" />
+</p>
+
+A full marketplace for OpenClaw skills — one-click install to give your butler new capabilities:
+
+- **68 Verified Skills** across multiple categories: Productivity, Communication, Development, Finance, and more
+- **One-Click Install/Remove** — skills are deployed to the customer's VM via SSH. Click "Install" and the skill is live within seconds. Click "Remove" to uninstall
+- **Installed Skills Bar** — prominent display at the top showing all currently active skills as removable chips (e.g. obsidian, support, telegram, vercel, weather)
+- **Search & Filter** — full-text search across skill names and descriptions, category dropdown filter, and "Popular" toggle to surface community favorites
+- **Productivity Integrations** — Linear, Notion, Todoist, Google Calendar, Obsidian, Trello, Airtable, Asana, ClickUp — your butler can manage your entire workflow
+- **Communication Tools** — Slack, Gmail, Discord, Twitter/X — your butler can send messages and monitor channels on your behalf
+
+Each skill is an OpenClaw extension that gets SSH-deployed to `/root/.openclaw/skills/` on the customer's VM. The `skills.py` API module handles fetching the skill catalog, installation via asyncssh, and tracking installed state per customer.
+
+---
+
+### SoulVault — 978 AI Personalities
+
+<p align="center">
+  <img src="docs/screenshots/soulvault.png" width="800" alt="SoulVault — 978 AI Personalities" />
+</p>
+
+Choose who your butler becomes. SoulVault is a personality marketplace with **978 unique AI personalities**, each with its own behavior, tone, and expertise:
+
+- **12 Categories** — Business, Creative Writing, Customer Support, Education, Famous Minds, Fun & Regional, Gaming, Philosophy, Productivity, Roleplay, Science, Technology
+- **Rich Personality Cards** — each soul has a custom avatar, name, category tag, download count, star rating, and review count. Preview before you install
+- **Currently Active** — always visible at the top which personality is currently running on your butler, with an "Active" badge
+- **One-Click Install** — select a personality, hit "Install", and your butler's entire behavior changes. The SOUL.md config file is deployed to the VM, the OpenClaw gateway restarts, and a Telegram notification confirms the switch
+- **Community Ratings** — personalities are rated by the community. "Viral Guru" has 617 reviews at 4.9 stars. "Enlightened Thinker" has 607 reviews at 4.0 stars. Real user feedback drives discovery
+- **Diverse Characters** — from "Strategic CEO Coach" (practical, direct, results-oriented) to "Crimson Sorcerer" (cyberpunk megacity roleplay) to "Data-Driven Director" (customer retention expert)
+
+SoulVault runs as a [separate open-source service](https://github.com/lennystepn-hue/soulvault). Butlr integrates via the `souls.py` API module which proxies the SoulVault catalog, handles SSH deployment of SOUL.md files, and triggers OpenClaw gateway restarts.
+
+---
+
+### ClawShield Security — Automated VM Hardening
+
+<p align="center">
+  <img src="docs/screenshots/security.png" width="800" alt="ClawShield Security — A Grade 90/100" />
+</p>
+
+Every customer VM is security-hardened with ClawShield — an automated security scanner and hardening tool:
+
+- **Security Grade** — letter grade (A through F) with numerical score. The screenshot shows **A — 90/100**, with 40 checks passed, 10 warnings, 0 failures
+- **50 Security Checks** — comprehensive scan covering Network, System, Authentication, Services, and File Permissions
+- **Filterable Results** — tabs for All (50), Warnings (10), Failed (0), and Passed (40). Click to filter and focus on what needs attention
+- **Actionable Fixes** — every warning includes a concrete fix command. IPv6 disabled? `sysctl -w net.ipv6.conf.all.disable_ipv6=1`. TLS expiring? `certbot renew`. Copy-paste ready
+- **Network Checks** — UFW Firewall status, open ports analysis ("10 listening ports, no dangerous ones exposed"), IPv6 configuration, DNS configuration, binding audit, TLS certificate expiry
+- **One-Click Actions** — "Run Scan" to trigger a fresh security audit, "Auto-Harden" to automatically fix all warnings, "Skill Scan" to check installed skills for vulnerabilities, "Reinstall" to reset the VM to a clean state
+
+The `security.py` API module SSH-es into the customer's VM, runs the ClawShield scanner, parses ANSI output, and calculates the security score. Results are displayed in a rich, categorized UI.
+
+---
+
+### Billing & Subscriptions — Stripe-Powered
+
+<p align="center">
+  <img src="docs/screenshots/billing.png" width="800" alt="Billing & Subscription Management" />
+</p>
+
+Full subscription lifecycle management powered by Stripe:
+
+- **Active Plan Display** — current plan name, status badge ("Active"), billing period, and next renewal date
+- **Manage in Stripe** — one-click redirect to Stripe's customer portal for payment method updates, invoice history, and plan changes
+- **Add-ons System** — upsell add-ons like the Memory add-on (persistent AI memory across conversations). Each add-on has its own Stripe subscription item, can be activated/cancelled independently
+- **Plan Comparison** — "Available Plans" section shows what the customer could upgrade to, with feature bullets: "Use your ChatGPT Plus or Claude Pro subscription", "Dedicated Cloud Server", "Telegram Bot included", "All AI models with own keys", "Email & Chat Support"
+- **Pricing** — clear pricing display (currently BYOK plan at **14.99/month**) with upgrade path
+- **Payment Info** — last 4 digits of card on file, card type (mastercard), and cancel option
+
+The billing system uses `stripe_service.py` for customer/subscription CRUD, `checkout.py` for Stripe Checkout sessions, and `webhooks.py` for handling Stripe events (checkout.session.completed, customer.subscription.updated/deleted, invoice.payment_failed).
+
+---
+
+### Support — Multi-Channel Help Desk
+
+<p align="center">
+  <img src="docs/screenshots/support.png" width="800" alt="Support System" />
+</p>
+
+Three support channels, unified into one system:
+
+- **Via Telegram** (Fastest) — customers type `/support your message here` directly in their butler chat. The message is relayed to the admin's support Telegram bot instantly. Replies go back through the same channel
+- **Via Dashboard** — structured ticket submission with category selection (General, Technical, Billing, Bug Report, Feature Request, Account), subject line, and detailed message field
+- **Via Email** — traditional email to support@butlr.cloud for longer conversations
+- **Built-in FAQ** — expandable FAQ section covering common questions: "How do I add my bot to a Telegram group?", "What commands does my bot support?", "How is API usage calculated?", "Can I upgrade or downgrade my plan?", "What happens if my bot goes offline?", "How do I use my own API key (BYOK)?"
+
+The Telegram support relay (`support.py`) uses two bots: the customer's butler bot receives `/support` messages and forwards them to the admin's dedicated support bot. Admin replies are routed back to the customer's butler. No third-party ticketing system needed.
 
 ---
 
@@ -316,20 +416,20 @@ butlr/
 ├── frontend/                   # Next.js 16 frontend
 │   ├── src/
 │   │   ├── app/
-│   │   │   ├── (marketing)/    # Landing page
-│   │   │   ├── (auth)/         # Login & registration
-│   │   │   ├── (onboarding)/   # Setup wizard & provisioning
-│   │   │   ├── (dashboard)/    # Customer portal
-│   │   │   └── (legal)/        # Privacy, terms, imprint
+│   │   │   ├── (marketing)/    # Landing page with 3D lobster mascot
+│   │   │   ├── (auth)/         # Login & registration (email + Google OAuth)
+│   │   │   ├── (onboarding)/   # Setup wizard with live terminal
+│   │   │   ├── (dashboard)/    # Customer portal (10 pages)
+│   │   │   └── (legal)/        # Privacy, terms, imprint, AUP
 │   │   ├── components/
-│   │   │   ├── landing/        # Landing page (Hero, Pricing, FAQ...)
-│   │   │   ├── dashboard/      # Dashboard (Stats, Charts, Settings...)
-│   │   │   ├── onboarding/     # Setup wizard components
-│   │   │   ├── checkout/       # Stripe checkout modal
+│   │   │   ├── landing/        # Hero, Features, Pricing, FAQ, Testimonials, LiveDemo
+│   │   │   ├── dashboard/      # StatsCard, MetricsChart, ActivityGrid, StatusBadge
+│   │   │   ├── onboarding/     # AuthStep, LiveTerminal
+│   │   │   ├── checkout/       # Stripe CheckoutModal
 │   │   │   └── layout/         # Navbar, Sidebar, Footer
 │   │   └── lib/
-│   │       ├── api.ts          # API client layer
-│   │       ├── types.ts        # TypeScript interfaces
+│   │       ├── api.ts          # API client (all 30+ endpoints)
+│   │       ├── types.ts        # TypeScript interfaces (25+ types)
 │   │       └── utils.ts        # Utility functions
 │   ├── package.json
 │   └── .env.example
@@ -356,8 +456,8 @@ butlr/
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/lennystepn-hue/butlr.git
-cd butlr
+git clone https://github.com/lennystepn-hue/butlr-openclaw-platform.git
+cd butlr-openclaw-platform
 ```
 
 ### 2. Backend Setup
@@ -432,6 +532,7 @@ npm run dev
 | `GOOGLE_CLIENT_SECRET` | No | Google OAuth client secret |
 | `OPENAI_CLIENT_ID` | No | OpenAI OAuth client ID (for BYOK linking) |
 | `BUTLR_MEMORY_OPENAI_KEY` | No | OpenAI key for memory embeddings |
+| `SOULVAULT_URL` | No | SoulVault API URL |
 | `SUPPORT_BOT_TOKEN` | No | Telegram bot token for support relay |
 | `SUPPORT_ADMIN_CHAT_ID` | No | Admin Telegram chat ID for support |
 | `BUTLR_SSH_KEY` | No | Path to SSH key for VM access |
@@ -623,6 +724,6 @@ We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 ---
 
 <p align="center">
-  <strong>Butlr</strong> — Your AI. Its own computer.<br/>
+  <strong>Butlr — The OpenClaw Cloud Platform</strong><br/>
   <a href="https://butlr.cloud">butlr.cloud</a>
 </p>

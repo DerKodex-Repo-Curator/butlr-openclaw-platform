@@ -2,11 +2,11 @@
   <img src="https://butlr.cloud/favicon.svg" width="80" alt="Butlr Logo" />
 </p>
 
-<h1 align="center">Butlr</h1>
+<h1 align="center">Butlr — The OpenClaw Cloud Platform</h1>
 
 <p align="center">
-  <strong>Your AI. Its own computer.</strong><br/>
-  A complete managed wrapper around <a href="https://github.com/openclaw-ai/openclaw">OpenClaw</a> — turning the open-source AI agent into a full SaaS platform with dedicated VMs, Telegram bots, billing, and a customer portal.
+  <strong>OpenClaw as a Service.</strong><br/>
+  The complete managed platform that turns <a href="https://github.com/openclaw-ai/openclaw">OpenClaw</a> into a production SaaS — dedicated VMs, Telegram bots, Stripe billing, and a full customer portal out of the box.
 </p>
 
 <p align="center">

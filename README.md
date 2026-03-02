@@ -27,6 +27,12 @@
   <img src="https://img.shields.io/badge/powered%20by-OpenClaw-orange.svg" alt="OpenClaw" />
 </p>
 
+<p align="center">
+  <a href="https://butlr.cloud">
+    <img src="docs/screenshot-hero.png" width="700" alt="Butlr Landing Page" />
+  </a>
+</p>
+
 ---
 
 ## What is Butlr?

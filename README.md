@@ -15,7 +15,8 @@
   <a href="#architecture">Architecture</a> &bull;
   <a href="#getting-started">Getting Started</a> &bull;
   <a href="#deployment">Deployment</a> &bull;
-  <a href="CONTRIBUTING.md">Contributing</a>
+  <a href="CONTRIBUTING.md">Contributing</a> &bull;
+  <a href="https://x.com/lenny_enderle">@lenny_enderle</a>
 </p>
 
 <p align="center">
